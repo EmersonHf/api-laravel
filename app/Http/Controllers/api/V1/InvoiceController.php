@@ -3,7 +3,7 @@
 namespace App\Http\Controllers\api\V1;
 
 use App\Http\Controllers\Controller;
-use App\Http\Resources\V1\InvoiceResource;
+use App\Http\Resources\InvoiceResource;
 use App\Models\Invoice;
 use App\Traits\HttpResponses;
 use Illuminate\Http\Request;
@@ -47,7 +47,7 @@ class InvoiceController extends Controller
         $created = Invoice::create($validator->validated());
 
         if ($created) {
-            return $this->response('invoice created', 200, $created);
+            return $this->response('invoice created', 200, new InvoiceResource($created->load('user')));
         }
         return $this->error('invoice not created', 400);
     }
