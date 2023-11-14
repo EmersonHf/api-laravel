@@ -19,7 +19,10 @@ use Illuminate\Support\Facades\Route;
 Route::prefix("v1")->group(function () {
     Route::get("/users", [UserController::class, "index"])->name("users.index");
     Route::get("/users/{user}", [UserController::class, "show"])->name("user.show");
+    Route::apiResource("invoices", InvoiceController::class);
     Route::get("/invoices", [InvoiceController::class, "index"])->name("invoices.index");
     Route::get("/invoices/{invoice}", [InvoiceController::class, "show"])->name("invoice.show");
     Route::post("/invoices", [InvoiceController::class, "store"])->name("store");
+    Route::put("/invoices/{invoice}", [InvoiceController::class, "update"])->name("update");
+    Route::delete("/invoices/{invoice}", [InvoiceController::class, "destroy"])->name("delete");
 });
