@@ -13,12 +13,22 @@ use Illuminate\Support\Facades\Validator;
 class InvoiceController extends Controller
 {
     use HttpResponses;
+
+    public function __construct()
+    {
+        $this->middleware(["auth:sanctum", 'ability:invoice-store,user-update'])->only(["store", "update"]);
+    }
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
-        return InvoiceResource::collection(Invoice::with('user')->get());
+        // return InvoiceResource::collection(Invoice::where([
+        //   ['value', '>', 5000],
+        //   ['paid', '=', 1]
+        // ])->with('user')->get());
+        // return InvoiceResource::collection(Invoice::with('user')->get());
+        return (new Invoice())->filter($request);
     }
 
     /**
@@ -34,6 +44,9 @@ class InvoiceController extends Controller
      */
     public function store(Request $request)
     {
+        if (!auth()->user()->tokenCan("invoice-store")) {
+            return $this->error('Unauthorized', 403);
+        }
         $validator = Validator::make($request->all(), [
             'user_id' => 'required',
             'type' => 'required|max:1',

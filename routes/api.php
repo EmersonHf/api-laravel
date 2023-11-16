@@ -2,6 +2,8 @@
 
 use App\Http\Controllers\api\V1\InvoiceController;
 use App\Http\Controllers\api\V1\UserController;
+use App\Http\Controllers\AuthController;
+use App\Http\Controllers\TesteController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -19,10 +21,14 @@ use Illuminate\Support\Facades\Route;
 Route::prefix("v1")->group(function () {
     Route::get("/users", [UserController::class, "index"])->name("users.index");
     Route::get("/users/{user}", [UserController::class, "show"])->name("user.show");
+
     Route::apiResource("invoices", InvoiceController::class);
-    Route::get("/invoices", [InvoiceController::class, "index"])->name("invoices.index");
-    Route::get("/invoices/{invoice}", [InvoiceController::class, "show"])->name("invoice.show");
-    Route::post("/invoices", [InvoiceController::class, "store"])->name("store");
-    Route::put("/invoices/{invoice}", [InvoiceController::class, "update"])->name("update");
-    Route::delete("/invoices/{invoice}", [InvoiceController::class, "destroy"])->name("delete");
+
+    Route::post("/login", [AuthController::class, "login"])->name("login");
+    Route::middleware('auth:sanctum')->group(function () {
+
+
+        Route::post("/logout", [AuthController::class, "logout"])->name("logout");
+        Route::get("/teste", [TesteController::class, "index"]);
+    });
 });
